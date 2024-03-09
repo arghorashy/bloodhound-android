@@ -32,6 +32,7 @@ import android.app.AlertDialog;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import java.util.concurrent.CompletableFuture;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+      
+        // Get config example code.
+        CompletableFuture<BloodhoundConfigRow[]> res = GoogleSheetsAPI.readFromConfigSheet(this);
+        res.thenAccept(value -> System.out.println(value[0].toString()));
+      
         LinearLayout layout = findViewById(R.id.layout);
         FragmentManager fragMan = getSupportFragmentManager();
         int buttonCount = 7;
