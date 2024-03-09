@@ -3,16 +3,9 @@
 
     <item
         android:id="@+id/favorite"
-        android:icon="@drawable/shr_logo"
+        android:icon="@drawable/baseline_pets_24"
         android:title="test1"
         android:contentDescription="test2"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/favorite2"
-        android:icon="@drawable/shr_logo"
-        android:title="test11"
-        android:contentDescription="test22"
         app:showAsAction="ifRoom" />
 
     <item
