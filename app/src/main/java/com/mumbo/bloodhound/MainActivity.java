@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,5 +27,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Get config example code.
+        CompletableFuture<BloodhoundConfigRow[]> res = GoogleSheetsAPI.readFromConfigSheet(this);
+        res.thenAccept(value -> System.out.println(value[0].toString()));
     }
 }
