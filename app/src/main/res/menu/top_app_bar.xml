@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/favorite"
+        android:icon="@drawable/shr_logo"
+        android:title="test1"
+        android:contentDescription="test2"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/favorite2"
+        android:icon="@drawable/shr_logo"
+        android:title="test11"
+        android:contentDescription="test22"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/more"
+        android:title="test3"
+        android:contentDescription="test4"
+        app:showAsAction="never" />
+
+</menu>
