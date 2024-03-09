@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ButtonFragment#newInstance} factory method to
@@ -53,22 +55,25 @@ public class ButtonFragment extends Fragment {
 
         alertBuilder = new AlertDialog.Builder(view.getContext());
 
-        button = view.findViewById(R.id.high_paw_button);
+        button = view.findViewById(R.id.paw_button);
         button.setText(this.paramName);
         button.setOnClickListener((View v) -> {
-            Log.d("BUTTONS", "User tapped the high_paw_button");
+            Log.d("ButtonFragment", "Click registered for button with name: " + this.paramName);
+            ArrayList<String> logArguments = new ArrayList<>();
+            logArguments.add(this.paramName);
             alertBuilder
-                    .setTitle("You've high-pawed the Bloodhound!!!")
-                    .setMessage("Bloodhound asks yes or no ??? ?")
+                    .setTitle("Log " + this.paramName)
+                    .setMessage("Do you wish to write this to the log?")
                     .setCancelable(false)
                     .setPositiveButton("Yes", (DialogInterface dialog, int id) -> {
+                        GoogleSheetsAPI.writeRowToLogSheet(this.getContext(), logArguments);
                         dialog.cancel();
-                        Toast.makeText(view.getContext(), "huzzzaahh a YES!!!!",
+                        Toast.makeText(view.getContext(), "Written!!!!",
                                 Toast.LENGTH_SHORT).show();
                     })
                     .setNegativeButton("No", (DialogInterface dialog, int id) -> {
                         dialog.cancel();
-                        Toast.makeText(view.getContext(), "NOooOOo how could you",
+                        Toast.makeText(view.getContext(), "Did not log.",
                                 Toast.LENGTH_SHORT).show();
                     });
 
