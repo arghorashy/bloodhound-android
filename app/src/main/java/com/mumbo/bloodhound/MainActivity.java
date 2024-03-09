@@ -49,12 +49,18 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragMan = getSupportFragmentManager();
         int buttonCount = 7;
         for (int buttonTick = 1; buttonTick <= buttonCount; buttonTick++) {
-            Fragment myFrag = ButtonFragment.newInstance("button" + buttonTick);
+            Fragment myFrag = ButtonFragment.newInstance("button" + buttonTick, 0);
             fragMan.beginTransaction()
                 .add(R.id.layout, myFrag)
                 .setReorderingAllowed(true)
                  .commit();
         }
+        Fragment myFrag = ButtonFragment.newInstance("buttonScale",6);
+        fragMan.beginTransaction()
+                .add(R.id.layout, myFrag)
+                .setReorderingAllowed(true)
+                .commit();
+
         setContentView(layout);
     }
 }

@@ -16,6 +16,8 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nullable;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ButtonFragment#newInstance} factory method to
@@ -25,17 +27,20 @@ public class ButtonFragment extends Fragment {
     AlertDialog.Builder alertBuilder;
     MaterialButton button;
     private static final String ARG_NAME = "arg_name";
+    private static final String ARG_SCALE_MAX = "arg_scale_max";
 
     private String paramName;
+    private int paramScaleMax;
 
     public ButtonFragment() {
         // Required empty public constructor
     }
 
-    public static ButtonFragment newInstance(String paramName) {
+    public static ButtonFragment newInstance(String paramName, int paramScaleMax) {
         ButtonFragment fragment = new ButtonFragment();
         Bundle args = new Bundle();
         args.putString(ARG_NAME, paramName);
+        args.putInt(ARG_SCALE_MAX, paramScaleMax);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,6 +50,7 @@ public class ButtonFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             paramName = getArguments().getString(ARG_NAME);
+            paramScaleMax = getArguments().getInt(ARG_SCALE_MAX);
         }
     }
 
@@ -60,7 +66,14 @@ public class ButtonFragment extends Fragment {
         button.setOnClickListener((View v) -> {
             Log.d("ButtonFragment", "Click registered for button with name: " + this.paramName);
             ArrayList<String> logArguments = new ArrayList<>();
+            logArguments.add(String.valueOf(new java.util.Date()));
             logArguments.add(this.paramName);
+
+            if (paramScaleMax > 0) {
+                final View customLayout = getLayoutInflater().inflate(R.layout.dialog, null);
+                alertBuilder.setView(customLayout);
+            }
+
             alertBuilder
                     .setTitle("Log " + this.paramName)
                     .setMessage("Do you wish to write this to the log?")
