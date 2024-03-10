@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.widget.LinearLayout;
+
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,12 +16,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        CompletableFuture<BloodhoundConfigRow[]> response =
+        CompletableFuture<ArrayList<BloodhoundConfigRow>> response =
                 GoogleSheetsAPI.readFromConfigSheet(this);
         response.thenAccept(this::populateLayoutWithButtons);
     }
 
-    private void populateLayoutWithButtons(BloodhoundConfigRow[] rows) {
+    private void populateLayoutWithButtons(ArrayList<BloodhoundConfigRow> rows) {
         LinearLayout layout = findViewById(R.id.layout);
         FragmentManager fragMan = getSupportFragmentManager();
         for (BloodhoundConfigRow row : rows) {

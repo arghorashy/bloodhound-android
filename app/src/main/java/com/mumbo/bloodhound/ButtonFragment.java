@@ -55,8 +55,7 @@ public class ButtonFragment extends Fragment {
         // Set up button name
         args.putString(ARG_NAME, row.buttonName);
         // Set up Slider
-        int scaleMax = row.scaleMax.isEmpty() ? 0 : Integer.parseInt(row.scaleMax);
-        args.putInt(ARG_SCALE_MAX, scaleMax);
+        args.putInt(ARG_SCALE_MAX, row.scaleMax);
         // Set up Text Field
         args.putBoolean(ARG_HAS_TEXT_FIELD, row.text.equals("true"));
         // Set up Options
