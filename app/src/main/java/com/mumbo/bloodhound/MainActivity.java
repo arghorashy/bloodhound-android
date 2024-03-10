@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        fetchConfigAndPopulateLayout();
+        getConfigAndPopulateLayout();
 
         MaterialToolbar toolbar = findViewById(R.id.menu);
         toolbar.getMenu().findItem(R.id.refresh_config)
@@ -34,9 +34,15 @@ public class MainActivity extends AppCompatActivity {
             });
     }
 
-    private void fetchConfigAndPopulateLayout() {
+    private void getConfigAndPopulateLayout() {
         CompletableFuture<ArrayList<BloodhoundConfigRow>> response =
                 BloodhoundConfigAPI.genConfig(this);
+        response.thenAccept(this::populateLayoutWithButtons);
+    }
+
+    private void fetchConfigAndPopulateLayout() {
+        CompletableFuture<ArrayList<BloodhoundConfigRow>> response =
+                BloodhoundConfigAPI.genFetchConfig(this);
         response.thenAccept(this::populateLayoutWithButtons);
     }
 
