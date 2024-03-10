@@ -2,16 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/favorite"
-        android:icon="@drawable/baseline_pets_24"
-        android:title="test1"
-        android:contentDescription="test2"
+        android:id="@+id/refresh_config"
+        android:icon="@drawable/baseline_refresh_24"
+        android:title="refresh"
         app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/more"
-        android:title="test3"
-        android:contentDescription="test4"
-        app:showAsAction="never" />
 
 </menu>
