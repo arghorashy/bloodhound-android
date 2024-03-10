@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.slider.RangeSlider;
 
 import java.util.ArrayList;
 
@@ -65,22 +66,26 @@ public class ButtonFragment extends Fragment {
         button.setText(this.paramName);
         button.setOnClickListener((View v) -> {
             Log.d("ButtonFragment", "Click registered for button with name: " + this.paramName);
+
+            final View customLayout = getLayoutInflater().inflate(R.layout.dialog, null);
+            RangeSlider slider = customLayout.findViewById(R.id.range_slider);
+
+            if (paramScaleMax > 0) {
+                slider.setValueTo(this.paramScaleMax);
+                alertBuilder.setView(customLayout);
+            }
             ArrayList<String> logArguments = new ArrayList<>();
             logArguments.add(String.valueOf(new java.util.Date()));
             logArguments.add(this.paramName);
-
-            if (paramScaleMax > 0) {
-                final View customLayout = getLayoutInflater().inflate(R.layout.dialog, null);
-                alertBuilder.setView(customLayout);
-            }
 
             alertBuilder
                     .setTitle("Log " + this.paramName)
                     .setMessage("Do you wish to write this to the log?")
                     .setCancelable(false)
                     .setPositiveButton("Yes", (DialogInterface dialog, int id) -> {
-                        GoogleSheetsAPI.writeRowToLogSheet(this.getContext(), logArguments);
                         dialog.cancel();
+                        logArguments.add(String.valueOf(slider.getValues().get(0)));
+                        GoogleSheetsAPI.writeRowToLogSheet(this.getContext(), logArguments);
                         Toast.makeText(view.getContext(), "Written!!!!",
                                 Toast.LENGTH_SHORT).show();
                     })

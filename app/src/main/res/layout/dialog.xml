@@ -5,6 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
     <com.google.android.material.slider.RangeSlider
+        android:id="@+id/range_slider"
         android:stepSize="1"
         android:valueTo="10"
         android:value="5"
