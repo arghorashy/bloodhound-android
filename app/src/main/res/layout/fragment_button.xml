@@ -7,13 +7,13 @@
     tools:context=".ButtonFragment">
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/paw_button"
+        android:id="@+id/button"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
         app:icon="@drawable/baseline_pets_24"
         android:layout_marginRight="12dp"
-        android:text="High Paw" />
+        android:text="Placeholder" />
 
 </FrameLayout>

@@ -1,6 +1,7 @@
 package com.mumbo.bloodhound;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -14,10 +15,12 @@ import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import javax.annotation.Nullable;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,19 +32,38 @@ public class ButtonFragment extends Fragment {
     MaterialButton button;
     private static final String ARG_NAME = "arg_name";
     private static final String ARG_SCALE_MAX = "arg_scale_max";
+    private static final String ARG_HAS_TEXT_FIELD = "arg_has_text_field";
+    private static final String ARG_OPTION1 = "arg_option1";
+    private static final String ARG_OPTION2 = "arg_option2";
+    private static final String ARG_OPTION3 = "arg_option3";
 
     private String paramName;
     private int paramScaleMax;
+
+    private boolean paramHasTextField;
+    private String paramOption1;
+    private String paramOption2;
+    private String paramOption3;
 
     public ButtonFragment() {
         // Required empty public constructor
     }
 
-    public static ButtonFragment newInstance(String paramName, int paramScaleMax) {
+    public static ButtonFragment newInstance(BloodhoundConfigRow row) {
         ButtonFragment fragment = new ButtonFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_NAME, paramName);
-        args.putInt(ARG_SCALE_MAX, paramScaleMax);
+        // Set up button name
+        args.putString(ARG_NAME, row.buttonName);
+        // Set up Slider
+        int scaleMax = row.scaleMax.isEmpty() ? 0 : Integer.parseInt(row.scaleMax);
+        args.putInt(ARG_SCALE_MAX, scaleMax);
+        // Set up Text Field
+        args.putBoolean(ARG_HAS_TEXT_FIELD, row.text.equals("true"));
+        // Set up Options
+        args.putString(ARG_OPTION1, row.option1);
+        args.putString(ARG_OPTION3, row.option2);
+        args.putString(ARG_OPTION2, row.option3);
+        // Send off Arguments
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,6 +74,10 @@ public class ButtonFragment extends Fragment {
         if (getArguments() != null) {
             paramName = getArguments().getString(ARG_NAME);
             paramScaleMax = getArguments().getInt(ARG_SCALE_MAX);
+            paramHasTextField = getArguments().getBoolean(ARG_HAS_TEXT_FIELD);
+            paramOption1 = getArguments().getString(ARG_OPTION1);
+            paramOption2 = getArguments().getString(ARG_OPTION2);
+            paramOption3 = getArguments().getString(ARG_OPTION3);
         }
     }
 
@@ -62,38 +88,69 @@ public class ButtonFragment extends Fragment {
 
         alertBuilder = new AlertDialog.Builder(view.getContext());
 
-        button = view.findViewById(R.id.paw_button);
+        button = view.findViewById(R.id.button);
         button.setText(this.paramName);
         button.setOnClickListener((View v) -> {
+            // TODO(team) disable additional button presses until the first one is resolved
+
             Log.d("ButtonFragment", "Click registered for button with name: " + this.paramName);
 
-            final View customLayout = getLayoutInflater().inflate(R.layout.dialog, null);
-            RangeSlider slider = customLayout.findViewById(R.id.range_slider);
+            // Create custom dialog layout
+            final View dialogLayout = getLayoutInflater().inflate(R.layout.dialog, null);
 
-            if (paramScaleMax > 0) {
+            // Set up Slider
+            RangeSlider slider = dialogLayout.findViewById(R.id.range_slider);
+            if (this.dialogHasSlider()) {
                 slider.setValueTo(this.paramScaleMax);
-                alertBuilder.setView(customLayout);
+            } else {
+                slider.setVisibility(View.GONE);
             }
-            ArrayList<String> logArguments = new ArrayList<>();
-            logArguments.add(String.valueOf(new java.util.Date()));
-            logArguments.add(this.paramName);
+
+            // Set up Text Field
+            TextInputLayout textField = dialogLayout.findViewById(R.id.text_field);
+            if (!this.paramHasTextField) {
+                textField.setVisibility(View.GONE);
+            }
+
+            // Set up options
+            SwitchMaterial option1 = dialogLayout.findViewById(R.id.option1);
+            if(!this.dialogHasOption1()) {
+                option1.setVisibility(View.GONE);
+            } else {
+                option1.setText(this.paramOption1);
+            }
+            SwitchMaterial option2 = dialogLayout.findViewById(R.id.option2);
+            if(!this.dialogHasOption2()) {
+                option2.setVisibility(View.GONE);
+            } else {
+                option2.setText(this.paramOption2);
+            }
+            SwitchMaterial option3 = dialogLayout.findViewById(R.id.option3);
+            if(!this.dialogHasOption3()) {
+                option3.setVisibility(View.GONE);
+            } else {
+                option3.setText(this.paramOption3);
+            }
 
             alertBuilder
-                    .setTitle("Log " + this.paramName)
-                    .setMessage("Do you wish to write this to the log?")
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", (DialogInterface dialog, int id) -> {
-                        dialog.cancel();
-                        logArguments.add(String.valueOf(slider.getValues().get(0)));
-                        GoogleSheetsAPI.writeRowToLogSheet(this.getContext(), logArguments);
-                        Toast.makeText(view.getContext(), "Written!!!!",
-                                Toast.LENGTH_SHORT).show();
-                    })
-                    .setNegativeButton("No", (DialogInterface dialog, int id) -> {
-                        dialog.cancel();
-                        Toast.makeText(view.getContext(), "Did not log.",
-                                Toast.LENGTH_SHORT).show();
-                    });
+                .setTitle("Log \"" + this.paramName + "\"?")
+                .setView(dialogLayout)
+                .setCancelable(false)
+                .setPositiveButton("Log it!", (DialogInterface dialog, int id) -> {
+                    dialog.cancel();
+                    String sliderValueString = getStringSliderValue(slider);
+                    String textFieldString = getTextFieldValue(textField);
+                    String option1Value = getOptionValue(option1, this.paramOption1);
+                    String option2Value = getOptionValue(option2, this.paramOption2);
+                    String option3Value = getOptionValue(option3, this.paramOption3);
+                    sendLogToSpreadsheet(sliderValueString, textFieldString, option1Value, option2Value, option3Value);
+                    String toastMessage = createSuccessfulLogToast(sliderValueString);
+                    showToast(view.getContext(), toastMessage);
+                })
+                .setNegativeButton("No", (DialogInterface dialog, int id) -> {
+                    dialog.cancel();
+                    showToast(view.getContext(), "Log cancelled.");
+                });
 
             AlertDialog alert = alertBuilder.create();
             alert.show();
@@ -101,4 +158,60 @@ public class ButtonFragment extends Fragment {
 
         return view;
     }
+
+    private String createSuccessfulLogToast(String sliderValueString) {
+        String toastMessage = "Writing \"" + this.paramName;
+        if (dialogHasSlider()) {
+            toastMessage += " " + sliderValueString + "/" + paramScaleMax;
+        }
+        toastMessage += "\"";
+        return toastMessage;
+    }
+
+    private void sendLogToSpreadsheet(String sliderValue, String textFieldString,
+                                      String option1Value, String option2Value, String option3Value) {
+        ArrayList<String> logArguments = new ArrayList<>();
+        Date today = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+        logArguments.add(dateFormat.format(today));
+        logArguments.add(timeFormat.format(today));
+        logArguments.add(this.paramName);
+        logArguments.add(this.dialogHasSlider() ? sliderValue : "");
+        logArguments.add(textFieldString);
+        logArguments.add(option1Value);
+        logArguments.add(option2Value);
+        logArguments.add(option3Value);
+        GoogleSheetsAPI.writeRowToLogSheet(this.getContext(), logArguments);
+    }
+
+
+    private String getOptionValue(SwitchMaterial optionToggle, String optionName) {
+        return optionToggle.isChecked() ? optionName : "";
+    }
+    private String getStringSliderValue(RangeSlider slider) {
+       int rawSliderValue = Math.round(slider.getValues().get(0));
+       return String.valueOf(rawSliderValue);
+    }
+    private String getTextFieldValue(TextInputLayout textField) {
+        return textField.getEditText() == null ? "" : textField.getEditText().getText().toString();
+    }
+
+    private void showToast(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+    private boolean dialogHasSlider() {
+        return this.paramScaleMax > 0;
+    }
+
+    private boolean dialogHasOption1() {
+        return !this.paramOption1.isEmpty();
+    }
+    private boolean dialogHasOption2() {
+        return !this.paramOption2.isEmpty();
+    }
+    private boolean dialogHasOption3() {
+        return !this.paramOption3.isEmpty();
+    }
+
 }

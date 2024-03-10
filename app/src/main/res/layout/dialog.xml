@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dialog_layout"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/range_slider"
         android:stepSize="1"
@@ -16,4 +18,37 @@
         app:trackColorInactive="@color/primary_light"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/option1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="option 1 placeholder"
+        android:layout_below="@id/range_slider"/>
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/option2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="option 2 placeholder"
+        android:layout_below="@id/option1"/>
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/option3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="option 3 placeholder"
+        android:layout_below="@id/option2"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/option3">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 </RelativeLayout>
