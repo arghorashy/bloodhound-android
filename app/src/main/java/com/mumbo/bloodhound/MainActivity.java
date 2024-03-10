@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         CompletableFuture<ArrayList<BloodhoundConfigRow>> response =
-                GoogleSheetsAPI.readFromConfigSheet(this);
+                BloodhoundConfigAPI.genConfig(this);
         response.thenAccept(this::populateLayoutWithButtons);
     }
 
