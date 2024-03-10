@@ -13,6 +13,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.slider.RangeSlider;
+
+import java.util.ArrayList;
+
+import javax.annotation.Nullable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,17 +28,20 @@ public class ButtonFragment extends Fragment {
     AlertDialog.Builder alertBuilder;
     MaterialButton button;
     private static final String ARG_NAME = "arg_name";
+    private static final String ARG_SCALE_MAX = "arg_scale_max";
 
     private String paramName;
+    private int paramScaleMax;
 
     public ButtonFragment() {
         // Required empty public constructor
     }
 
-    public static ButtonFragment newInstance(String paramName) {
+    public static ButtonFragment newInstance(String paramName, int paramScaleMax) {
         ButtonFragment fragment = new ButtonFragment();
         Bundle args = new Bundle();
         args.putString(ARG_NAME, paramName);
+        args.putInt(ARG_SCALE_MAX, paramScaleMax);
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,6 +51,7 @@ public class ButtonFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             paramName = getArguments().getString(ARG_NAME);
+            paramScaleMax = getArguments().getInt(ARG_SCALE_MAX);
         }
     }
 
@@ -53,22 +62,36 @@ public class ButtonFragment extends Fragment {
 
         alertBuilder = new AlertDialog.Builder(view.getContext());
 
-        button = view.findViewById(R.id.high_paw_button);
+        button = view.findViewById(R.id.paw_button);
         button.setText(this.paramName);
         button.setOnClickListener((View v) -> {
-            Log.d("BUTTONS", "User tapped the high_paw_button");
+            Log.d("ButtonFragment", "Click registered for button with name: " + this.paramName);
+
+            final View customLayout = getLayoutInflater().inflate(R.layout.dialog, null);
+            RangeSlider slider = customLayout.findViewById(R.id.range_slider);
+
+            if (paramScaleMax > 0) {
+                slider.setValueTo(this.paramScaleMax);
+                alertBuilder.setView(customLayout);
+            }
+            ArrayList<String> logArguments = new ArrayList<>();
+            logArguments.add(String.valueOf(new java.util.Date()));
+            logArguments.add(this.paramName);
+
             alertBuilder
-                    .setTitle("You've high-pawed the Bloodhound!!!")
-                    .setMessage("Bloodhound asks yes or no ??? ?")
+                    .setTitle("Log " + this.paramName)
+                    .setMessage("Do you wish to write this to the log?")
                     .setCancelable(false)
                     .setPositiveButton("Yes", (DialogInterface dialog, int id) -> {
                         dialog.cancel();
-                        Toast.makeText(view.getContext(), "huzzzaahh a YES!!!!",
+                        logArguments.add(String.valueOf(slider.getValues().get(0)));
+                        GoogleSheetsAPI.writeRowToLogSheet(this.getContext(), logArguments);
+                        Toast.makeText(view.getContext(), "Written!!!!",
                                 Toast.LENGTH_SHORT).show();
                     })
                     .setNegativeButton("No", (DialogInterface dialog, int id) -> {
                         dialog.cancel();
-                        Toast.makeText(view.getContext(), "NOooOOo how could you",
+                        Toast.makeText(view.getContext(), "Did not log.",
                                 Toast.LENGTH_SHORT).show();
                     });
 

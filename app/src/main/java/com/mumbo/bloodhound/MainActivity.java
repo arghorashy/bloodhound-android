@@ -43,17 +43,22 @@ public class MainActivity extends AppCompatActivity {
       
         // Get config example code.
         CompletableFuture<BloodhoundConfigRow[]> res = GoogleSheetsAPI.readFromConfigSheet(this);
-        res.thenAccept(value -> System.out.println(value[0].toString()));
-      
+        res.thenAccept(config ->
+            populateLayoutWithButtons(config)
+        );
+
+    }
+
+    private void populateLayoutWithButtons(BloodhoundConfigRow[] rows) {
         LinearLayout layout = findViewById(R.id.layout);
         FragmentManager fragMan = getSupportFragmentManager();
-        int buttonCount = 7;
-        for (int buttonTick = 1; buttonTick <= buttonCount; buttonTick++) {
-            Fragment myFrag = ButtonFragment.newInstance("button" + buttonTick);
+        for (BloodhoundConfigRow row : rows) {
+            System.out.println(row.toString());
+            Fragment myFrag = ButtonFragment.newInstance(row.buttonName, Integer.parseInt(row.scaleMax));
             fragMan.beginTransaction()
                 .add(R.id.layout, myFrag)
                 .setReorderingAllowed(true)
-                 .commit();
+                .commit();
         }
         setContentView(layout);
     }
