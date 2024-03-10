@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void fetchConfigAndPopulateLayout() {
         CompletableFuture<ArrayList<BloodhoundConfigRow>> response =
-                GoogleSheetsAPI.readFromConfigSheet(this);
+                BloodhoundConfigAPI.genConfig(this);
         response.thenAccept(this::populateLayoutWithButtons);
     }
 
