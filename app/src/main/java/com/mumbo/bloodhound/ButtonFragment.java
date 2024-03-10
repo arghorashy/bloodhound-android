@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
@@ -32,11 +33,17 @@ public class ButtonFragment extends Fragment {
     private static final String ARG_NAME = "arg_name";
     private static final String ARG_SCALE_MAX = "arg_scale_max";
     private static final String ARG_HAS_TEXT_FIELD = "arg_has_text_field";
+    private static final String ARG_OPTION1 = "arg_option1";
+    private static final String ARG_OPTION2 = "arg_option2";
+    private static final String ARG_OPTION3 = "arg_option3";
 
     private String paramName;
     private int paramScaleMax;
 
     private boolean paramHasTextField;
+    private String paramOption1;
+    private String paramOption2;
+    private String paramOption3;
 
     public ButtonFragment() {
         // Required empty public constructor
@@ -52,6 +59,10 @@ public class ButtonFragment extends Fragment {
         args.putInt(ARG_SCALE_MAX, scaleMax);
         // Set up Text Field
         args.putBoolean(ARG_HAS_TEXT_FIELD, row.text.equals("true"));
+        // Set up Options
+        args.putString(ARG_OPTION1, row.option1);
+        args.putString(ARG_OPTION3, row.option2);
+        args.putString(ARG_OPTION2, row.option3);
         // Send off Arguments
         fragment.setArguments(args);
         return fragment;
@@ -64,6 +75,9 @@ public class ButtonFragment extends Fragment {
             paramName = getArguments().getString(ARG_NAME);
             paramScaleMax = getArguments().getInt(ARG_SCALE_MAX);
             paramHasTextField = getArguments().getBoolean(ARG_HAS_TEXT_FIELD);
+            paramOption1 = getArguments().getString(ARG_OPTION1);
+            paramOption2 = getArguments().getString(ARG_OPTION2);
+            paramOption3 = getArguments().getString(ARG_OPTION3);
         }
     }
 
@@ -94,9 +108,28 @@ public class ButtonFragment extends Fragment {
 
             // Set up Text Field
             TextInputLayout textField = dialogLayout.findViewById(R.id.text_field);
-            Log.d("this.paramHasTextField", String.valueOf(this.paramHasTextField));
             if (!this.paramHasTextField) {
                 textField.setVisibility(View.GONE);
+            }
+
+            // Set up options
+            SwitchMaterial option1 = dialogLayout.findViewById(R.id.option1);
+            if(!this.dialogHasOption1()) {
+                option1.setVisibility(View.GONE);
+            } else {
+                option1.setText(this.paramOption1);
+            }
+            SwitchMaterial option2 = dialogLayout.findViewById(R.id.option2);
+            if(!this.dialogHasOption2()) {
+                option2.setVisibility(View.GONE);
+            } else {
+                option2.setText(this.paramOption2);
+            }
+            SwitchMaterial option3 = dialogLayout.findViewById(R.id.option3);
+            if(!this.dialogHasOption3()) {
+                option3.setVisibility(View.GONE);
+            } else {
+                option3.setText(this.paramOption3);
             }
 
             alertBuilder
@@ -106,8 +139,11 @@ public class ButtonFragment extends Fragment {
                 .setPositiveButton("Log it!", (DialogInterface dialog, int id) -> {
                     dialog.cancel();
                     String sliderValueString = getStringSliderValue(slider);
-                    String textFieldString = textField.getEditText() == null ? "" : textField.getEditText().getText().toString();
-                    sendLogToSpreadsheet(sliderValueString, textFieldString);
+                    String textFieldString = getTextFieldValue(textField);
+                    String option1Value = getOptionValue(option1, this.paramOption1);
+                    String option2Value = getOptionValue(option2, this.paramOption2);
+                    String option3Value = getOptionValue(option3, this.paramOption3);
+                    sendLogToSpreadsheet(sliderValueString, textFieldString, option1Value, option2Value, option3Value);
                     String toastMessage = createSuccessfulLogToast(sliderValueString);
                     showToast(view.getContext(), toastMessage);
                 })
@@ -132,22 +168,33 @@ public class ButtonFragment extends Fragment {
         return toastMessage;
     }
 
-    private void sendLogToSpreadsheet(String sliderValue, String textFieldString) {
+    private void sendLogToSpreadsheet(String sliderValue, String textFieldString,
+                                      String option1Value, String option2Value, String option3Value) {
         ArrayList<String> logArguments = new ArrayList<>();
         Date today = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("h:m a");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
         logArguments.add(dateFormat.format(today));
         logArguments.add(timeFormat.format(today));
         logArguments.add(this.paramName);
         logArguments.add(this.dialogHasSlider() ? sliderValue : "");
         logArguments.add(textFieldString);
+        logArguments.add(option1Value);
+        logArguments.add(option2Value);
+        logArguments.add(option3Value);
         GoogleSheetsAPI.writeRowToLogSheet(this.getContext(), logArguments);
     }
 
+
+    private String getOptionValue(SwitchMaterial optionToggle, String optionName) {
+        return optionToggle.isChecked() ? optionName : "";
+    }
     private String getStringSliderValue(RangeSlider slider) {
-        int rawSliderValue = Math.round(slider.getValues().get(0));
+       int rawSliderValue = Math.round(slider.getValues().get(0));
        return String.valueOf(rawSliderValue);
+    }
+    private String getTextFieldValue(TextInputLayout textField) {
+        return textField.getEditText() == null ? "" : textField.getEditText().getText().toString();
     }
 
     private void showToast(Context context, String message) {
@@ -156,4 +203,15 @@ public class ButtonFragment extends Fragment {
     private boolean dialogHasSlider() {
         return this.paramScaleMax > 0;
     }
+
+    private boolean dialogHasOption1() {
+        return !this.paramOption1.isEmpty();
+    }
+    private boolean dialogHasOption2() {
+        return !this.paramOption2.isEmpty();
+    }
+    private boolean dialogHasOption3() {
+        return !this.paramOption3.isEmpty();
+    }
+
 }
