@@ -16,12 +16,10 @@ public class BloodhoundConfigAPI {
     public static CompletableFuture<ArrayList<BloodhoundConfigRow>> genConfig(Context context) {
         BloodhoundConfigRow[] maybeConfig = BloodhoundConfigAPI.getCachedConfig(context);
         if (maybeConfig != null) {
-            System.out.println("xxx genConfig, found cached.");
             CompletableFuture<ArrayList<BloodhoundConfigRow>> res = new CompletableFuture<>();
             res.complete(new ArrayList(Arrays.asList(maybeConfig)));
             return res;
         }
-        System.out.println("xxx xgenConfig, did not find cached.");
         return BloodhoundConfigAPI.genFetchConfig(context);
     }
 
@@ -44,7 +42,6 @@ public class BloodhoundConfigAPI {
     private static void cacheConfig(Context context, ArrayList<BloodhoundConfigRow> config) {
         Gson gson = new Gson();
         String json = gson.toJson(config);
-        System.out.println("xxx cacheConfig");
         SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_KEY, 0);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString(CONFIG_SHARED_PREFERENCES_KEY, json);
