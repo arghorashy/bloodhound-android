@@ -2,9 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary_light">#B9C0DA</color>
-    <color name="primary_dark">#998DA0</color>
-    <color name="complement_light">#C4DACF</color>
-    <color name="complement_dark">#A14A76</color>
-    <color name="dark">#202C39</color>
+    <color name="primary">#713c86</color>
+    <color name="primaryVariant">#8d4897</color>
+    <color name="primaryDark">#492d67</color>
+    <color name="onPrimary">#FFFFFFFF</color>
+    <color name="secondary">#c24b5d</color>
+    <color name="secondaryDark">#863c51</color>
+    <color name="secondaryVariant">#e95865</color>
+    <color name="onSecondary">#FFFFFFFF</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="onSurface">#000000</color>
 </resources>
