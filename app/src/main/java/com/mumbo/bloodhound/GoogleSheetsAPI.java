@@ -11,6 +11,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -30,18 +31,16 @@ public class GoogleSheetsAPI {
         q.add(req);
     }
 
-    public static CompletableFuture<BloodhoundConfigRow[]> readFromConfigSheet(Context context) {
+    public static CompletableFuture<ArrayList<BloodhoundConfigRow>> readFromConfigSheet(Context context) {
         String fullURL = API_URL + "?action=readConfig";
-        CompletableFuture<BloodhoundConfigRow[]> res = new CompletableFuture<>();
+        CompletableFuture<ArrayList<BloodhoundConfigRow>> res = new CompletableFuture<>();
 
         StringRequest req = new StringRequest(
                 Request.Method.GET,
                 fullURL,
                 s -> {
                     Log.d("REQ", "Read from Config.");
-                    Gson gson = new Gson();
-                    BloodhoundConfigRow[] config = gson.fromJson(s, BloodhoundConfigRow[].class);
-                    res.complete(config);
+                    res.complete(BloodhoundConfigRow.fromRawJsonArray(s));
                 },
                 e -> Log.d("REQ", "Encountered error when reading from config!"));
         RequestQueue q = Volley.newRequestQueue(context);
