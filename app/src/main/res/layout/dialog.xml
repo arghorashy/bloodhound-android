@@ -8,14 +8,14 @@
 
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/range_slider"
+        app:useMaterialThemeColors="true"
         android:stepSize="1"
         android:valueTo="10"
         android:value="5"
         android:valueFrom="1"
         app:trackHeight="20dp"
-        app:trackColor="@color/complement_light"
-        app:trackColorActive="@color/primary_dark"
-        app:trackColorInactive="@color/primary_light"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
@@ -23,6 +23,7 @@
         android:id="@+id/option1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
         android:checked="false"
         android:text="option 1 placeholder"
         android:layout_below="@id/range_slider"/>
@@ -30,6 +31,7 @@
         android:id="@+id/option2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
         android:checked="false"
         android:text="option 2 placeholder"
         android:layout_below="@id/option1"/>
@@ -37,6 +39,7 @@
         android:id="@+id/option3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
         android:checked="false"
         android:text="option 3 placeholder"
         android:layout_below="@id/option2"/>
@@ -45,6 +48,8 @@
         android:id="@+id/text_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_below="@id/option3">
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"

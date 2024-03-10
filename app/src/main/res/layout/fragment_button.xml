@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:paddingStart="20dp"
     tools:context=".ButtonFragment">
 
     <com.google.android.material.button.MaterialButton
@@ -11,9 +12,9 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:layout_marginEnd="12dp"
         app:icon="@drawable/baseline_pets_24"
-        android:layout_marginRight="12dp"
         android:text="Placeholder" />
 
 </FrameLayout>
