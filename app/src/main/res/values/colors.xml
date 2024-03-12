@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary">#713c86</color>
-    <color name="primaryVariant">#8d4897</color>
-    <color name="primaryDark">#492d67</color>
-    <color name="onPrimary">#FFFFFFFF</color>
-    <color name="secondary">#c24b5d</color>
-    <color name="secondaryDark">#863c51</color>
-    <color name="secondaryVariant">#e95865</color>
-    <color name="onSecondary">#FFFFFFFF</color>
-    <color name="surface">#FFFFFFFF</color>
-    <color name="onSurface">#000000</color>
+    <color name="grey">#C0C0C0</color>
 </resources>

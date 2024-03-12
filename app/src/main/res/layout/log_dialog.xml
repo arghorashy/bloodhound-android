@@ -24,9 +24,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:checked="false"
         android:text="option 1 placeholder"
-        android:layout_below="@id/range_slider"/>
+        android:layout_below="@id/range_slider"
+        style="@style/Widget.MaterialComponents.CompoundButton.Switch"/>
+
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/option2"
         android:layout_width="wrap_content"
@@ -34,7 +35,9 @@
         android:layout_marginLeft="30dp"
         android:checked="false"
         android:text="option 2 placeholder"
-        android:layout_below="@id/option1"/>
+        android:layout_below="@id/option1"
+        style="@style/Widget.MaterialComponents.CompoundButton.Switch"/>
+
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/option3"
         android:layout_width="wrap_content"
@@ -42,7 +45,8 @@
         android:layout_marginLeft="30dp"
         android:checked="false"
         android:text="option 3 placeholder"
-        android:layout_below="@id/option2"/>
+        android:layout_below="@id/option2"
+        style="@style/Widget.MaterialComponents.CompoundButton.Switch"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_field"

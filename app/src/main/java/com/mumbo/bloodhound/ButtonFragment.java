@@ -90,12 +90,13 @@ public class ButtonFragment extends Fragment {
         button = view.findViewById(R.id.button);
         button.setText(this.paramName);
         button.setOnClickListener((View v) -> {
-            // TODO(team) disable additional button presses until the first one is resolved
-
             Log.d("ButtonFragment", "Click registered for button with name: " + this.paramName);
 
+            // Disable button until alert is resolved.
+            button.setClickable(false);
+
             // Create custom dialog layout
-            final View dialogLayout = getLayoutInflater().inflate(R.layout.dialog, null);
+            final View dialogLayout = getLayoutInflater().inflate(R.layout.log_dialog, null);
 
             // Set up Slider
             RangeSlider slider = dialogLayout.findViewById(R.id.range_slider);
@@ -132,7 +133,7 @@ public class ButtonFragment extends Fragment {
             }
 
             alertBuilder
-                .setTitle("Log \"" + this.paramName + "\"?")
+                .setTitle(this.paramName)
                 .setView(dialogLayout)
                 .setCancelable(false)
                 .setPositiveButton("Log it!", (DialogInterface dialog, int id) -> {
@@ -145,10 +146,11 @@ public class ButtonFragment extends Fragment {
                     sendLogToSpreadsheet(sliderValueString, textFieldString, option1Value, option2Value, option3Value);
                     String toastMessage = createSuccessfulLogToast(sliderValueString);
                     showToast(view.getContext(), toastMessage);
+                    button.setClickable(true);
                 })
                 .setNegativeButton("No", (DialogInterface dialog, int id) -> {
                     dialog.cancel();
-                    showToast(view.getContext(), "Log cancelled.");
+                    button.setClickable(true);
                 });
 
             AlertDialog alert = alertBuilder.create();
