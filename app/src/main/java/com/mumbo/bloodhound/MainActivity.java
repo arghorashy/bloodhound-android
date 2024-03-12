@@ -1,5 +1,8 @@
 package com.mumbo.bloodhound;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -23,9 +26,21 @@ public class MainActivity extends AppCompatActivity {
         getConfigAndPopulateLayout();
 
         MaterialToolbar toolbar = findViewById(R.id.menu);
+
         toolbar.getMenu().findItem(R.id.refresh_config)
             .setOnMenuItemClickListener((MenuItem item) -> {
                 Log.d("MainActivity", "Refreshing config.");
+                // Hack away any existing fragments (buttons)
+                FragmentManager fragMan = getSupportFragmentManager();
+                ButtonFragment reject = new ButtonFragment();
+                fragMan.beginTransaction()
+                        .replace(R.id.outer_layout, reject).commit();
+                fragMan.beginTransaction().remove(reject).commit();
+                LinearLayout innerLayout = findViewById(R.id.outer_layout);
+                setContentView(innerLayout);
+                // Show loader
+                findViewById(R.id.loader).setVisibility(VISIBLE);
+                // Fetch and render new buttons
                 fetchConfigAndPopulateLayout();
                 return false;
             });
@@ -44,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateLayoutWithButtons(ArrayList<BloodhoundConfigRow> rows) {
-        LinearLayout innerLayout = findViewById(R.id.outer_layout);
-        Log.d("layout", innerLayout.toString());
         FragmentManager fragMan = getSupportFragmentManager();
         // Hack away any existing fragments
         ButtonFragment reject = new ButtonFragment();
@@ -60,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
                 .setReorderingAllowed(true)
                 .commit();
         }
-        setContentView(innerLayout);
+        // Render
+        findViewById(R.id.loader).setVisibility(GONE);
+        setContentView(findViewById(R.id.outer_layout));
     }
 }
