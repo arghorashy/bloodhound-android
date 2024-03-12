@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="45dp"
+android:background="#EFEFF4"
+android:paddingLeft="10dp">
+
+    <TextView
+        android:id="@+id/profileName"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="#696969"
+        android:paddingRight="20dp"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical|left"
+        android:layout_centerVertical="true"
+        android:text="Customer Satisfaction"
+        android:textSize="18dip"/>
+
+    <ImageView
+        android:id="@+id/selectBtn"
+        android:layout_alignParentRight="true"
+        android:layout_height="30dp"
+        android:layout_width="25dp"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/baseline_beenhere_24" />
+
+    <ImageView
+        android:id="@+id/removeBtn"
+        android:layout_alignParentRight="true"
+        android:layout_height="30dp"
+        android:layout_width="25dp"
+        android:layout_marginRight="50dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/baseline_delete_24"/>
+
+
+
+
+
+
+</RelativeLayout>

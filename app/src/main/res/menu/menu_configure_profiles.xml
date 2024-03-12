@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/refresh_config"
+        android:icon="@drawable/baseline_add_24"
+        android:title="Refresh"
+        app:showAsAction="ifRoom" />
+
+</menu>

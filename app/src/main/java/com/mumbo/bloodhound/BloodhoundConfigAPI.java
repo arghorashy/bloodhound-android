@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
 public class BloodhoundConfigAPI {
-    private static String SHARED_PREFERENCES_KEY = "com.mumbo.bloodhound_shared_prefs";
     private static String CONFIG_SHARED_PREFERENCES_KEY = "com.mumbo.bloodhound_config_key";
 
     public static CompletableFuture<ArrayList<BloodhoundConfigRow>> genConfig(Context context) {
@@ -31,7 +30,7 @@ public class BloodhoundConfigAPI {
     }
 
     private static BloodhoundConfigRow[] getCachedConfig(Context context) {
-        SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_KEY, 0);
+        SharedPreferences pref = context.getSharedPreferences(Constants.SHARED_PREFERENCES_KEY, 0);
         String json = pref.getString(CONFIG_SHARED_PREFERENCES_KEY, "");
         if (json.isEmpty()) {
             return null;
@@ -42,7 +41,7 @@ public class BloodhoundConfigAPI {
     private static void cacheConfig(Context context, ArrayList<BloodhoundConfigRow> config) {
         Gson gson = new Gson();
         String json = gson.toJson(config);
-        SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_KEY, 0);
+        SharedPreferences pref = context.getSharedPreferences(Constants.SHARED_PREFERENCES_KEY, 0);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString(CONFIG_SHARED_PREFERENCES_KEY, json);
         editor.commit();

@@ -22,7 +22,7 @@ public class GoogleSheetsAPI {
     // See backend function definition here: https://script.google.com/home/projects/1utIOA5lWcz53UV1_rWB4iHGr12BhR2KfeJPvsQl5Nhr5XsHC8TZeYWs9/arg1?id=45&arg2=Afsheen&arg3=Ghorashy
     private static final String API_URL = "https://script.google.com/macros/s/AKfycbxS-s4k1_taX7fPF0HVre-G0hwhU3GdY1f80H5RYTo3uW0-NZx_i8nohZpXiFxs1Kgd/exec";
 
-    private static final BloodhoundEnv ENV = KRISTA;
+    private static final BloodhoundEnv ENV = TEST;
 
     public static void writeRowToLogSheet(Context context, List<String> rowStrings) {
         Gson gson = new Gson();
@@ -67,5 +67,4 @@ public class GoogleSheetsAPI {
         }
         return API_URL + queryParams + "&env=" + envQueryParam;
     }
-
 }

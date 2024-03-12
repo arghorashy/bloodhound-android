@@ -4,7 +4,13 @@
     <item
         android:id="@+id/refresh_config"
         android:icon="@drawable/baseline_refresh_24"
-        android:title="refresh"
+        android:title="Refresh"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/configure_profiles"
+        android:icon="@drawable/baseline_new_releases_24"
+        android:title="Settings"
         app:showAsAction="ifRoom" />
 
     <item
