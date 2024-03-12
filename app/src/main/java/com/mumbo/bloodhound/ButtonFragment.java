@@ -96,7 +96,7 @@ public class ButtonFragment extends Fragment {
             button.setClickable(false);
 
             // Create custom dialog layout
-            final View dialogLayout = getLayoutInflater().inflate(R.layout.dialog, null);
+            final View dialogLayout = getLayoutInflater().inflate(R.layout.log_dialog, null);
 
             // Set up Slider
             RangeSlider slider = dialogLayout.findViewById(R.id.range_slider);

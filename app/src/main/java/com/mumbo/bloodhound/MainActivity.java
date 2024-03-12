@@ -7,12 +7,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
@@ -44,6 +49,15 @@ public class MainActivity extends AppCompatActivity {
                 fetchConfigAndPopulateLayout();
                 return false;
             });
+
+        toolbar.getMenu().findItem(R.id.add_profile_dialog)
+                .setOnMenuItemClickListener((MenuItem item) -> {
+                    Log.d("MainActivity", "Ice Cream!!!");
+showAddProfileAlert();
+
+                    return false;
+                });
+
     }
 
     private void getConfigAndPopulateLayout() {
@@ -56,6 +70,30 @@ public class MainActivity extends AppCompatActivity {
         CompletableFuture<ArrayList<BloodhoundConfigRow>> response =
                 BloodhoundConfigAPI.genFetchConfig(this);
         response.thenAccept(this::populateLayoutWithButtons);
+    }
+
+    private void showAddProfileAlert() {
+        AlertDialog.Builder addProfileAlertDialog = new AlertDialog.Builder(this);
+
+        final View dialogLayout = getLayoutInflater().inflate(R.layout.configure_profiles_dialog, null);
+        addProfileAlertDialog
+                .setTitle("Add profile?")
+                .setView(dialogLayout)
+                .setCancelable(false)
+                .setPositiveButton("Add", (DialogInterface dialog, int id) -> {
+                    TextInputLayout name = dialogLayout.findViewById(R.id.profile_name_input);
+                    String nameInputString = name.getEditText().getText().toString();
+                    TextInputLayout url = dialogLayout.findViewById(R.id.spreadsheet_url_input);
+                    String urlInputString = url.getEditText().getText().toString();
+                    Toast.makeText(this,  nameInputString+ " " + urlInputString, Toast.LENGTH_SHORT).show();
+                    dialog.cancel();
+                })
+                .setNegativeButton("No", (DialogInterface dialog, int id) -> {
+                    dialog.cancel();
+                });
+
+        AlertDialog alert = addProfileAlertDialog.create();
+        alert.show();
     }
 
     private void populateLayoutWithButtons(ArrayList<BloodhoundConfigRow> rows) {
