@@ -133,7 +133,7 @@ public class ButtonFragment extends Fragment {
             }
 
             alertBuilder
-                .setTitle("Log \"" + this.paramName + "\"?")
+                .setTitle(this.paramName)
                 .setView(dialogLayout)
                 .setCancelable(false)
                 .setPositiveButton("Log it!", (DialogInterface dialog, int id) -> {
@@ -150,7 +150,6 @@ public class ButtonFragment extends Fragment {
                 })
                 .setNegativeButton("No", (DialogInterface dialog, int id) -> {
                     dialog.cancel();
-                    showToast(view.getContext(), "Log cancelled.");
                     button.setClickable(true);
                 });
 

@@ -24,7 +24,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:checked="true"
         android:text="option 1 placeholder"
         android:layout_below="@id/range_slider"
         style="@style/Widget.MaterialComponents.CompoundButton.Switch"/>
