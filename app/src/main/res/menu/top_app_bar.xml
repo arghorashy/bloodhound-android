@@ -9,14 +9,8 @@
 
     <item
         android:id="@+id/configure_profiles"
-        android:icon="@drawable/baseline_new_releases_24"
+        android:icon="@drawable/baseline_settings_24"
         android:title="Settings"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/add_profile_dialog"
-        android:icon="@drawable/baseline_icecream_24"
-        android:title="refresh"
         app:showAsAction="ifRoom" />
 
 </menu>
