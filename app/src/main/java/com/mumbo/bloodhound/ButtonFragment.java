@@ -104,6 +104,7 @@ public class ButtonFragment extends Fragment {
                 slider.setValueTo(this.paramScaleMax);
             } else {
                 slider.setVisibility(View.GONE);
+                dialogLayout.findViewById(R.id.range_slider_name_text).setVisibility(View.GONE);
             }
 
             // Set up Text Field
