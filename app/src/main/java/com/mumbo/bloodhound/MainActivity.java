@@ -40,11 +40,7 @@ public class MainActivity extends AppCompatActivity {
             .setOnMenuItemClickListener((MenuItem item) -> {
                 Log.d("MainActivity", "Refreshing config.");
                 // Hack away any existing fragments (buttons)
-                FragmentManager fragMan = getSupportFragmentManager();
-                ButtonFragment reject = new ButtonFragment();
-                fragMan.beginTransaction()
-                        .replace(R.id.inner_layout, reject).commit();
-                fragMan.beginTransaction().remove(reject).commit();
+                clearButtons();
                 // Show loader
                 findViewById(R.id.loader).setVisibility(VISIBLE);
                 // Fetch and render new buttons

@@ -1,6 +1,5 @@
 package com.mumbo.bloodhound;
 
-
 import android.content.Context;
 import android.util.Log;
 
