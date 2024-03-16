@@ -183,7 +183,8 @@ public class ButtonFragment extends Fragment {
         logArguments.add(option1Value);
         logArguments.add(option2Value);
         logArguments.add(option3Value);
-        GoogleSheetsAPI.writeRowToLogSheet(this.getContext(), logArguments);
+        Context context = this.getContext();
+        GoogleSheetsAPI.writeRowToLogSheet(context, ProfileMgr.getActiveProfileStatically(context), logArguments);
     }
 
 

@@ -61,6 +61,12 @@ public class ProfileMgr {
         commitChange();
     }
 
+    @Nullable
+    public static Profile getActiveProfileStatically(Context context) {
+        ProfileMgr profileMgr = new ProfileMgr(context);
+        return profileMgr.getActiveProfile();
+    }
+
     public @Nullable Profile getActiveProfile() {
         for (Profile profile : profiles) {
             if (profile.active) {
