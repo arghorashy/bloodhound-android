@@ -3,21 +3,30 @@ package com.mumbo.bloodhound;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 public class MainActivity extends AppCompatActivity {
+    Profile loadedProfile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,35 +63,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ProfileMgr profileMgr = new ProfileMgr(this);
-        Profile profile = profileMgr.getActiveProfile();
-        if (profile != null) {
-            MaterialToolbar title = findViewById(R.id.menu);
-            title.setTitle("Bloodhound " + "(" + profile.name + ")");
-        }
-
+        maybeLoadConfigForProfile(false);
     }
 
     private void getConfigAndPopulateLayout() {
-        CompletableFuture<ArrayList<BloodhoundConfigRow>> response =
-                BloodhoundConfigAPI.genConfig(this);
-        response.thenAccept(this::populateLayoutWithButtons);
+        maybeLoadConfigForProfile(false);
     }
 
     private void fetchConfigAndPopulateLayout() {
-        CompletableFuture<ArrayList<BloodhoundConfigRow>> response =
-                BloodhoundConfigAPI.genFetchConfig(this);
-        response.thenAccept(this::populateLayoutWithButtons);
+        loadConfigForProfile(true);
     }
 
     private void populateLayoutWithButtons(ArrayList<BloodhoundConfigRow> rows) {
-        FragmentManager fragMan = getSupportFragmentManager();
         // Hack away any existing fragments
-        ButtonFragment reject = new ButtonFragment();
-        fragMan.beginTransaction()
-                .replace(R.id.inner_layout, reject).commit();
-        fragMan.beginTransaction().remove(reject).commit();
+        clearButtons();
         // Add new fragments
+        FragmentManager fragMan = getSupportFragmentManager();
         for (BloodhoundConfigRow row : rows) {
             Fragment myFrag = ButtonFragment.newInstance(row);
             fragMan.beginTransaction()
@@ -92,5 +88,46 @@ public class MainActivity extends AppCompatActivity {
         }
         // Render
         findViewById(R.id.loader).setVisibility(GONE);
+    }
+
+    private void clearButtons() {
+        FragmentManager fragMan = getSupportFragmentManager();
+        ButtonFragment reject = new ButtonFragment();
+        fragMan.beginTransaction()
+                .replace(R.id.inner_layout, reject).commit();
+        fragMan.beginTransaction().remove(reject).commit();
+    }
+
+    private void maybeLoadConfigForProfile(boolean fetch) {
+        Profile active = ProfileMgr.getActiveProfileStatically(this);
+        if (active == null || (loadedProfile == null && active != null) || (loadedProfile != null && loadedProfile.name != active.name)) {
+            loadConfigForProfile(fetch);
+        }
+    }
+
+    private void loadConfigForProfile(boolean fetch) {
+        Profile active = ProfileMgr.getActiveProfileStatically(this);
+        MaterialToolbar title = findViewById(R.id.menu);
+        if (active == null) {
+            title.setTitle("Bloodhound");
+            clearButtons();
+            findViewById(R.id.loader).setVisibility(GONE);
+            return;
+        }
+        if ((loadedProfile == null && active != null) || (loadedProfile != null && loadedProfile.name != active.name)) {
+            title.setTitle("Bloodhound " + "(" + active.name + ")");
+            clearButtons();
+            findViewById(R.id.loader).setVisibility(VISIBLE);
+            if (fetch) {
+                CompletableFuture<ArrayList<BloodhoundConfigRow>> response =
+                        BloodhoundConfigAPI.genFetchConfig(this, active);
+                response.thenAccept(this::populateLayoutWithButtons);
+            } else {
+                CompletableFuture<ArrayList<BloodhoundConfigRow>> response =
+                        BloodhoundConfigAPI.genConfig(this, active);
+                response.thenAccept(this::populateLayoutWithButtons);
+            }
+
+        }
     }
 }

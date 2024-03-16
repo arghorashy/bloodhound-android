@@ -28,6 +28,7 @@ public class BloodhoundConfigRow {
     // non-strings might come back as strings, e.g., scaleMax.
     public static ArrayList<BloodhoundConfigRow> fromRawJsonArray(String json) {
         Gson gson = new Gson();
+        System.out.println("xxx  " + json);
         BloodhoundConfigRowRaw[] rawConfig = gson.fromJson(json, BloodhoundConfigRowRaw[].class);
         ArrayList<BloodhoundConfigRow> config = new ArrayList<>();
         for (BloodhoundConfigRowRaw raw : rawConfig) {
