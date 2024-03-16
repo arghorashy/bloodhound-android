@@ -17,15 +17,14 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class ConfigureProfilesActivity extends AppCompatActivity {
 
-    private ProfileMgr profileMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppState.init(this);
         setContentView(R.layout.activity_configure_profiles);
-        profileMgr = new ProfileMgr(this);
         ProfileArrayAdapter adapter = new ProfileArrayAdapter(this,
-                profileMgr);
+                AppState.profileMgr);
         ListView listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(adapter);
 
@@ -50,7 +49,7 @@ public class ConfigureProfilesActivity extends AppCompatActivity {
                     String nameInputString = name.getEditText().getText().toString();
                     TextInputLayout url = dialogLayout.findViewById(R.id.spreadsheet_url_input);
                     String urlInputString = url.getEditText().getText().toString();
-                    profileMgr.addProfile(nameInputString, urlInputString);
+                    AppState.profileMgr.addProfile(nameInputString, urlInputString);
                     dialog.cancel();
                 })
                 .setNegativeButton("No", (DialogInterface dialog, int id) -> {

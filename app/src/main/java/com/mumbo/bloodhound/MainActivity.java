@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.Application;
 import android.content.Intent;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppState.init(this);
+
         setContentView(R.layout.activity_main);
 
         getConfigAndPopulateLayout();
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        AppState.init(this);
         maybeLoadConfigForProfile(false);
     }
 
@@ -95,14 +99,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void maybeLoadConfigForProfile(boolean fetch) {
-        Profile active = ProfileMgr.getActiveProfileStatically(this);
-        if (active == null || (loadedProfile == null && active != null) || (loadedProfile != null && loadedProfile.name != active.name)) {
+        Profile active = AppState.getActiveProfile();
+        if (active == null || isLoadedProfileStale()) {
             loadConfigForProfile(fetch);
         }
     }
 
     private void loadConfigForProfile(boolean fetch) {
-        Profile active = ProfileMgr.getActiveProfileStatically(this);
+        Profile active = AppState.getActiveProfile();
         MaterialToolbar title = findViewById(R.id.menu);
         if (active == null) {
             title.setTitle("Bloodhound");
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.loader).setVisibility(GONE);
             return;
         }
-        if ((loadedProfile == null && active != null) || (loadedProfile != null && loadedProfile.name != active.name)) {
+        if (isLoadedProfileStale()) {
             title.setTitle("Bloodhound " + "(" + active.name + ")");
             clearButtons();
             findViewById(R.id.loader).setVisibility(VISIBLE);
@@ -123,7 +127,11 @@ public class MainActivity extends AppCompatActivity {
                         BloodhoundConfigAPI.genConfig(this, active);
                 response.thenAccept(this::populateLayoutWithButtons);
             }
-
         }
+    }
+
+    private boolean isLoadedProfileStale() {
+        Profile active = AppState.getActiveProfile();
+        return (loadedProfile == null && active != null) || (loadedProfile != null && loadedProfile.name != active.name);
     }
 }
