@@ -104,6 +104,7 @@ public class ButtonFragment extends Fragment {
                 slider.setValueTo(this.paramScaleMax);
             } else {
                 slider.setVisibility(View.GONE);
+                dialogLayout.findViewById(R.id.range_slider_name_text).setVisibility(View.GONE);
             }
 
             // Set up Text Field
@@ -143,7 +144,9 @@ public class ButtonFragment extends Fragment {
                     String option1Value = getOptionValue(option1, this.paramOption1);
                     String option2Value = getOptionValue(option2, this.paramOption2);
                     String option3Value = getOptionValue(option3, this.paramOption3);
-                    sendLogToSpreadsheet(sliderValueString, textFieldString, option1Value, option2Value, option3Value);
+                    RangeSlider timeAgoSlider = dialogLayout.findViewById(R.id.time_picker);
+                    int timeAgoMn = Math.round(timeAgoSlider.getValues().get(0));
+                    sendLogToSpreadsheet(timeAgoMn, sliderValueString, textFieldString, option1Value, option2Value, option3Value);
                     String toastMessage = createSuccessfulLogToast(sliderValueString);
                     showToast(view.getContext(), toastMessage);
                     button.setClickable(true);
@@ -169,14 +172,14 @@ public class ButtonFragment extends Fragment {
         return toastMessage;
     }
 
-    private void sendLogToSpreadsheet(String sliderValue, String textFieldString,
+    private void sendLogToSpreadsheet(int timeAgoMn, String sliderValue, String textFieldString,
                                       String option1Value, String option2Value, String option3Value) {
         ArrayList<String> logArguments = new ArrayList<>();
-        Date today = new Date();
+        Date logTime = new Date(System.currentTimeMillis() - timeAgoMn * 60000);
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
-        logArguments.add(dateFormat.format(today));
-        logArguments.add(timeFormat.format(today));
+        logArguments.add(dateFormat.format(logTime));
+        logArguments.add(timeFormat.format(logTime));
         logArguments.add(this.paramName);
         logArguments.add(this.dialogHasSlider() ? sliderValue : "");
         logArguments.add(textFieldString);

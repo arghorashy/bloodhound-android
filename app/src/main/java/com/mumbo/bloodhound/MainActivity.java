@@ -43,10 +43,8 @@ public class MainActivity extends AppCompatActivity {
                 FragmentManager fragMan = getSupportFragmentManager();
                 ButtonFragment reject = new ButtonFragment();
                 fragMan.beginTransaction()
-                        .replace(R.id.outer_layout, reject).commit();
+                        .replace(R.id.inner_layout, reject).commit();
                 fragMan.beginTransaction().remove(reject).commit();
-                LinearLayout innerLayout = findViewById(R.id.outer_layout);
-                setContentView(innerLayout);
                 // Show loader
                 findViewById(R.id.loader).setVisibility(VISIBLE);
                 // Fetch and render new buttons
@@ -84,20 +82,19 @@ public class MainActivity extends AppCompatActivity {
         for (BloodhoundConfigRow row : rows) {
             Fragment myFrag = ButtonFragment.newInstance(row);
             fragMan.beginTransaction()
-                .add(R.id.outer_layout, myFrag)
+                .add(R.id.inner_layout, myFrag)
                 .setReorderingAllowed(true)
                 .commit();
         }
         // Render
         findViewById(R.id.loader).setVisibility(GONE);
-        setContentView(findViewById(R.id.outer_layout));
     }
 
     private void clearButtons() {
         FragmentManager fragMan = getSupportFragmentManager();
         ButtonFragment reject = new ButtonFragment();
         fragMan.beginTransaction()
-                .replace(R.id.outer_layout, reject).commit();
+                .replace(R.id.inner_layout, reject).commit();
         fragMan.beginTransaction().remove(reject).commit();
     }
 
