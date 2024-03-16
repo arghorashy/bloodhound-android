@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class GoogleSheetsAPI {
-    private static final String API_URL = "https://script.google.com/macros/s/AKfycbxvZR9ei46GlAI7Hy0lUVX8BL9ya-GI1V48hFcjp8BB_1nt8fJbUeQK8skX3DKMwh6d/exec";
+    private static final String API_URL = "https://script.google.com/macros/s/AKfycbwBk2lq302eSJVUM8Qg7eywP4HdxWF-AUhBh_HzNmJ29vlB1XZVyntj-tjaSaUSYJzI/exec";
 
     public static void writeRowToLogSheet(Context context, Profile profile, List<String> rowStrings) {
         Gson gson = new Gson();
