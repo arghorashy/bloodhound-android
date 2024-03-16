@@ -8,18 +8,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
@@ -41,10 +34,8 @@ public class MainActivity extends AppCompatActivity {
                 FragmentManager fragMan = getSupportFragmentManager();
                 ButtonFragment reject = new ButtonFragment();
                 fragMan.beginTransaction()
-                        .replace(R.id.outer_layout, reject).commit();
+                        .replace(R.id.inner_layout, reject).commit();
                 fragMan.beginTransaction().remove(reject).commit();
-                LinearLayout innerLayout = findViewById(R.id.outer_layout);
-                setContentView(innerLayout);
                 // Show loader
                 findViewById(R.id.loader).setVisibility(VISIBLE);
                 // Fetch and render new buttons
@@ -84,25 +75,22 @@ public class MainActivity extends AppCompatActivity {
         response.thenAccept(this::populateLayoutWithButtons);
     }
 
-
-
     private void populateLayoutWithButtons(ArrayList<BloodhoundConfigRow> rows) {
         FragmentManager fragMan = getSupportFragmentManager();
         // Hack away any existing fragments
         ButtonFragment reject = new ButtonFragment();
         fragMan.beginTransaction()
-                .replace(R.id.outer_layout, reject).commit();
+                .replace(R.id.inner_layout, reject).commit();
         fragMan.beginTransaction().remove(reject).commit();
         // Add new fragments
         for (BloodhoundConfigRow row : rows) {
             Fragment myFrag = ButtonFragment.newInstance(row);
             fragMan.beginTransaction()
-                .add(R.id.outer_layout, myFrag)
+                .add(R.id.inner_layout, myFrag)
                 .setReorderingAllowed(true)
                 .commit();
         }
         // Render
         findViewById(R.id.loader).setVisibility(GONE);
-        setContentView(findViewById(R.id.outer_layout));
     }
 }
