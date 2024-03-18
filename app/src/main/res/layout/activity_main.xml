@@ -7,12 +7,10 @@
     android:layout_height="wrap_content"
     tools:context=".MainActivity"
     >
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:id="@+id/outer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -29,14 +27,17 @@
             android:visibility="gone"
             android:indeterminate="true" />
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/inner_layout"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </com.google.android.material.tabs.TabLayout>
+
+        <LinearLayout
+            android:id="@+id/inner_layout1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
         </LinearLayout>
 
     </LinearLayout>

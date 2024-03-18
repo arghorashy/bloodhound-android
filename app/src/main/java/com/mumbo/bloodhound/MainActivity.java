@@ -3,25 +3,20 @@ package com.mumbo.bloodhound;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import androidx.annotation.Nullable;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.app.Application;
 import android.content.Intent;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.tabs.TabLayout;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
@@ -75,14 +70,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateLayoutWithButtons(ArrayList<BloodhoundConfigRow> rows) {
+        Log.d("Response!!.", rows.toString());
+
         // Hack away any existing fragments
         clearButtons();
         // Add new fragments
         FragmentManager fragMan = getSupportFragmentManager();
+        ImmutableSet<String> tabNames = rows.stream().map(row -> row.tabName).collect(toImmutableSet());
+        Log.d("tabNames", tabNames.toString());
+
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.removeAllTabs();
+        for (String tabName: tabNames) {
+            Log.d("tabName", tabName);
+            tabLayout.addTab(tabLayout.newTab().setText(tabName));
+        }
+
+/*
+
+        PlansPagerAdapter adapter = new PlansPagerAdapter
+                (getSupportFragmentManager(), tab.getTabCount());
+        viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(1);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab));
+
+ */
+
         for (BloodhoundConfigRow row : rows) {
             Fragment myFrag = ButtonFragment.newInstance(row);
             fragMan.beginTransaction()
-                .add(R.id.inner_layout, myFrag)
+                .add(R.id.inner_layout1, myFrag)
                 .setReorderingAllowed(true)
                 .commit();
         }
@@ -94,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragMan = getSupportFragmentManager();
         ButtonFragment reject = new ButtonFragment();
         fragMan.beginTransaction()
-                .replace(R.id.inner_layout, reject).commit();
+                .replace(R.id.inner_layout1, reject).commit();
         fragMan.beginTransaction().remove(reject).commit();
     }
 

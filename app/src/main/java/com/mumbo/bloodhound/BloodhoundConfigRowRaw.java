@@ -8,4 +8,5 @@ public class BloodhoundConfigRowRaw {
     public String option2;
     public String option3;
     public String scaleMax;
+    public String tabName;
 }
