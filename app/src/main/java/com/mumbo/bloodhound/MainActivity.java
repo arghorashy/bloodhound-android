@@ -5,9 +5,13 @@ import static android.view.View.VISIBLE;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +20,8 @@ import android.view.MenuItem;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.ArrayList;
@@ -36,9 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar.getMenu().findItem(R.id.refresh_config)
             .setOnMenuItemClickListener((MenuItem item) -> {
-                Log.d("MainActivity", "Refreshing config.");
-                // Hack away any existing fragments (buttons)
-                clearButtons();
+                Log.d("MainActivity", "Refreshing config...");
                 // Show loader
                 findViewById(R.id.loader).setVisibility(VISIBLE);
                 // Fetch and render new buttons
@@ -70,49 +74,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateLayoutWithButtons(ArrayList<BloodhoundConfigRow> rows) {
-        Log.d("Response!!.", rows.toString());
+        // Stop showing loader
+        findViewById(R.id.loader).setVisibility(GONE);
+        Log.d("MainActivity", "Config fetched...");
 
-        // Hack away any existing fragments
-        clearButtons();
-        // Add new fragments
-        FragmentManager fragMan = getSupportFragmentManager();
+        // Populate TabLayout
         ImmutableSet<String> tabNames = rows.stream().map(row -> row.tabName).collect(toImmutableSet());
-        Log.d("tabNames", tabNames.toString());
-
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.removeAllTabs();
         for (String tabName: tabNames) {
-            Log.d("tabName", tabName);
             tabLayout.addTab(tabLayout.newTab().setText(tabName));
         }
 
-/*
-
-        PlansPagerAdapter adapter = new PlansPagerAdapter
-                (getSupportFragmentManager(), tab.getTabCount());
-        viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(1);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab));
-
- */
-
+        // Set up ViewPager2 for the tabs
+        ViewStateAdapter stateAdapter = new ViewStateAdapter(getSupportFragmentManager(), getLifecycle());
+        ImmutableMultimap.Builder<String, BloodhoundConfigRow> tabToRows = ImmutableMultimap.builder();
         for (BloodhoundConfigRow row : rows) {
-            Fragment myFrag = ButtonFragment.newInstance(row);
-            fragMan.beginTransaction()
-                .add(R.id.inner_layout1, myFrag)
-                .setReorderingAllowed(true)
-                .commit();
+            tabToRows.put(row.tabName, row);
         }
-        // Render
-        findViewById(R.id.loader).setVisibility(GONE);
-    }
+        stateAdapter.setTabToRowsMap(tabToRows.build());
+        stateAdapter.setTabLayout(tabLayout);
+        final ViewPager2 pager = findViewById(R.id.pager);
+        pager.setAdapter(stateAdapter);
 
-    private void clearButtons() {
-        FragmentManager fragMan = getSupportFragmentManager();
-        ButtonFragment reject = new ButtonFragment();
-        fragMan.beginTransaction()
-                .replace(R.id.inner_layout1, reject).commit();
-        fragMan.beginTransaction().remove(reject).commit();
+        // When the ViewPager2 is swiped, the tabs should change accordingly
+        pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                tabLayout.selectTab(tabLayout.getTabAt(position));
+            }
+        });
+
+        // When tab is selected, the pager should update
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Log.d("tab", String.valueOf(tab.getText()));
+                pager.setCurrentItem(tab.getPosition());
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
     }
 
     private void maybeLoadConfigForProfile(boolean fetch) {
@@ -127,13 +131,11 @@ public class MainActivity extends AppCompatActivity {
         MaterialToolbar title = findViewById(R.id.menu);
         if (active == null) {
             title.setTitle("Bloodhound");
-            clearButtons();
             findViewById(R.id.loader).setVisibility(GONE);
             return;
         }
         if (isLoadedProfileStale()) {
             title.setTitle("Bloodhound " + "(" + active.name + ")");
-            clearButtons();
             findViewById(R.id.loader).setVisibility(VISIBLE);
             if (fetch) {
                 CompletableFuture<ArrayList<BloodhoundConfigRow>> response =
@@ -150,5 +152,36 @@ public class MainActivity extends AppCompatActivity {
     private boolean isLoadedProfileStale() {
         Profile active = AppState.getActiveProfile();
         return (loadedProfile == null && active != null) || (loadedProfile != null && loadedProfile.name != active.name);
+    }
+}
+
+ class ViewStateAdapter extends FragmentStateAdapter {
+    private ImmutableMultimap<String, BloodhoundConfigRow> tabToRows;
+    TabLayout tabLayout;
+    public ViewStateAdapter(@NonNull FragmentManager fragmentManager,
+                            @NonNull Lifecycle lifecycle) {
+        super(fragmentManager, lifecycle);
+    }
+
+    public void setTabToRowsMap(ImmutableMultimap<String, BloodhoundConfigRow> tabToRows) {
+        this.tabToRows = tabToRows;
+    }
+    public void setTabLayout(TabLayout tabLayout) {
+        this.tabLayout = tabLayout;
+    }
+
+    @NonNull
+    @Override
+    public Fragment createFragment(int position) {
+        ArrayList<String> keys = new ArrayList(this.tabToRows.keySet());
+        String tabName = keys.get(position);
+        TabFragment tabFragment = TabFragment.newInstance(tabName);
+        tabFragment.setRows(this.tabToRows.get(tabName));
+        return tabFragment;
+    }
+
+    @Override
+    public int getItemCount() {
+        return this.tabToRows.keySet().size();
     }
 }

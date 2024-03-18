@@ -60,8 +60,8 @@ public class ButtonFragment extends Fragment {
         args.putBoolean(ARG_HAS_TEXT_FIELD, row.text.equals("true"));
         // Set up Options
         args.putString(ARG_OPTION1, row.option1);
-        args.putString(ARG_OPTION3, row.option2);
-        args.putString(ARG_OPTION2, row.option3);
+        args.putString(ARG_OPTION2, row.option2);
+        args.putString(ARG_OPTION3, row.option3);
         // Send off Arguments
         fragment.setArguments(args);
         return fragment;
