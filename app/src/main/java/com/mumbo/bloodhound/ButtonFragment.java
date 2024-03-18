@@ -36,6 +36,7 @@ public class ButtonFragment extends Fragment {
     private static final String ARG_OPTION1 = "arg_option1";
     private static final String ARG_OPTION2 = "arg_option2";
     private static final String ARG_OPTION3 = "arg_option3";
+    private static final String ARG_TAB_NAME = "arg_tab_name";
 
     private String paramName;
     private int paramScaleMax;
@@ -44,12 +45,13 @@ public class ButtonFragment extends Fragment {
     private String paramOption1;
     private String paramOption2;
     private String paramOption3;
+    private String paramTabName;
 
     public ButtonFragment() {
         // Required empty public constructor
     }
 
-    public static ButtonFragment newInstance(BloodhoundConfigRow row) {
+    public static ButtonFragment newInstance(BloodhoundConfigRow row, String paramTabName) {
         ButtonFragment fragment = new ButtonFragment();
         Bundle args = new Bundle();
         // Set up button name
@@ -60,8 +62,9 @@ public class ButtonFragment extends Fragment {
         args.putBoolean(ARG_HAS_TEXT_FIELD, row.text.equals("true"));
         // Set up Options
         args.putString(ARG_OPTION1, row.option1);
-        args.putString(ARG_OPTION3, row.option2);
-        args.putString(ARG_OPTION2, row.option3);
+        args.putString(ARG_OPTION2, row.option2);
+        args.putString(ARG_OPTION3, row.option3);
+        args.putString(ARG_TAB_NAME, paramTabName);
         // Send off Arguments
         fragment.setArguments(args);
         return fragment;
@@ -77,6 +80,7 @@ public class ButtonFragment extends Fragment {
             paramOption1 = getArguments().getString(ARG_OPTION1);
             paramOption2 = getArguments().getString(ARG_OPTION2);
             paramOption3 = getArguments().getString(ARG_OPTION3);
+            paramTabName = getArguments().getString(ARG_TAB_NAME);
         }
     }
 
@@ -186,10 +190,10 @@ public class ButtonFragment extends Fragment {
         logArguments.add(option1Value);
         logArguments.add(option2Value);
         logArguments.add(option3Value);
+        logArguments.add(this.paramTabName); //this.paramTabName
         Context context = this.getContext();
         GoogleSheetsAPI.writeRowToLogSheet(context, AppState.profileMgr.getActiveProfile(), logArguments);
     }
-
 
     private String getOptionValue(SwitchMaterial optionToggle, String optionName) {
         return optionToggle.isChecked() ? optionName : "";
