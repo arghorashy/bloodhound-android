@@ -180,10 +180,8 @@ public class ButtonFragment extends Fragment {
                                       String option1Value, String option2Value, String option3Value) {
         ArrayList<String> logArguments = new ArrayList<>();
         Date logTime = new Date(System.currentTimeMillis() - timeAgoMn * 60000);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-dd-MM kk:mm:ss");
         logArguments.add(dateFormat.format(logTime));
-        logArguments.add(timeFormat.format(logTime));
         logArguments.add(this.paramName);
         logArguments.add(this.dialogHasSlider() ? sliderValue : "");
         logArguments.add(textFieldString);
