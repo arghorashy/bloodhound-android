@@ -13,6 +13,7 @@ public class BloodhoundConfigRow {
     public String option2;
     public String option3;
     public int scaleMax;
+    public String tabName;
 
     public BloodhoundConfigRow(BloodhoundConfigRowRaw raw) {
         id = raw.id;
@@ -22,6 +23,7 @@ public class BloodhoundConfigRow {
         option2 = raw.option2;
         option3 = raw.option3;
         scaleMax = raw.scaleMax.isEmpty() ? 0 : Integer.parseInt(raw.scaleMax);
+        tabName = raw.tabName;
     }
 
     // The raw refers to the fact that in the JSON coming from the server, values that should be
@@ -52,6 +54,7 @@ public class BloodhoundConfigRow {
         strings.add(option2);
         strings.add(option3);
         strings.add(String.valueOf(scaleMax));
+        strings.add(tabName);
         return String.join(", ", strings);
     }
 }
